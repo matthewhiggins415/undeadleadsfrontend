@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const UploadGoogleSheetForm = ({ onSubmit, setSheetUploaded, setNumOfUploadLeads }) => {
+const UploadGoogleSheetForm = ({ onSubmit, setSheetUploaded, setNumOfUploadLeads, onAuthError }) => {
   const [sheetUrl, setSheetUrl] = useState('');
   const [error, setError] = useState('');
 
@@ -37,6 +37,9 @@ const UploadGoogleSheetForm = ({ onSubmit, setSheetUploaded, setNumOfUploadLeads
         if (data.success === true) {
           setSheetUploaded(data.sheetUrl)
           setNumOfUploadLeads(data.data.rows.length)
+        } else if (data.error === 'NOT_AUTHENTICATED') {
+          onAuthError(); // 🔑 triggers modal in Home.js
+          return;
         }
 
       }
