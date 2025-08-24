@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container } from './SearchForm.styles';
 
-const SearchForm = ({ onQueryChange }) => {
+const SearchForm = ({ loading }) => {
   const [sheetName, setSheetName] = useState('');
   const [titles, setTitles] = useState(['VP', 'CTO']);
   const [keywords, setKeywords] = useState(['video streaming']);
@@ -16,6 +16,8 @@ const SearchForm = ({ onQueryChange }) => {
     const locationString = location.map(l => `"${l}"`).join(' OR ');
 
     const query = `site:linkedin.com/in/ (${titleString}) (${keywordString}) (${locationString})`;
+
+    const newWindow = window.open('', '_blank'); // open immediately on click
 
     try {
       const res = await fetch(`http://localhost:5000/api/google/scrape-leads`, {
@@ -35,9 +37,11 @@ const SearchForm = ({ onQueryChange }) => {
 
       const data = await res.json();
       console.log("Backend response:", data);
+      loading(true)
 
-      if (data.success) {
-        window.open(data.url, '_blank');
+      if (data.message === 'Scraping complete!') {
+        loading(false);
+        newWindow.location.href = data.url; // navigate opened window
       } else {
         console.error('❌ Sheet creation failed:', data.error);
       }

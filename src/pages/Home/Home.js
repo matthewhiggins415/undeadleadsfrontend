@@ -5,6 +5,7 @@ import UploadGoogleSheetForm from '../../components/UploadForm/UploadForm';
 import RemoveUpload from '../../components/RemoveUpload/RemoveUpload';
 import ReauthModal from '../../components/ReauthModal/ReauthModal';
 import CaptchaModal from '../../components/CaptchaModal/CaptchaModal';
+import LoadingSpinner from '../../components/LoadingModal/LoadingModal';
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:5000'); 
@@ -14,6 +15,7 @@ const Home = () => {
   const [numOfUploadLeads, setNumOfUploadLeads] = useState(0);
   const [showReauthModal, setShowReauthModal] = useState(false);
   const [showCaptchaModal, setShowCaptchaModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -28,6 +30,7 @@ const Home = () => {
   useEffect(() => {
     const handleCaptcha = () => {
       console.log('received captchaRequired event');
+      setIsLoading(false);
       setShowCaptchaModal(true);
     };
   
@@ -42,6 +45,7 @@ const Home = () => {
     socket.emit('captchaSolved'); 
     console.log('Captcha solved, emitted event to server');
     setShowCaptchaModal(false);
+    setIsLoading(true)
   };
 
 
@@ -61,7 +65,9 @@ const Home = () => {
         <RemoveUpload setSheetUploaded={setSheetUploaded} sheetUploaded={sheetUploaded} numOfUploadLeads={numOfUploadLeads}/>
       )}
 
-      <SearchForm />
+      <SearchForm 
+        loading={setIsLoading}
+      />
 
       <ReauthModal 
         show={showReauthModal} 
@@ -71,6 +77,10 @@ const Home = () => {
       <CaptchaModal 
         show={showCaptchaModal} 
         onSolve={handleCaptchaSolved} 
+      />
+
+      <LoadingSpinner 
+        show={isLoading} 
       />
     </Container>
   )
