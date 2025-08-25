@@ -6,7 +6,11 @@ import RemoveUpload from '../../components/RemoveUpload/RemoveUpload';
 import ReauthModal from '../../components/ReauthModal/ReauthModal';
 import CaptchaModal from '../../components/CaptchaModal/CaptchaModal';
 import LoadingSpinner from '../../components/LoadingModal/LoadingModal';
+import SheetsList from '../../components/UserSheets/UserSheets';
 import io from 'socket.io-client';
+
+// sheet functions
+import { getAllSheets } from '../../api/user'; 
 
 const socket = io('http://localhost:5000'); 
 
@@ -16,6 +20,21 @@ const Home = () => {
   const [showReauthModal, setShowReauthModal] = useState(false);
   const [showCaptchaModal, setShowCaptchaModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [userSheets, setUserSheets] = useState([]); // state to hold user sheets
+
+  useEffect(() => {
+    const userSheets = async () => {
+      try {
+        const sheets = await getAllSheets();
+        console.log("Fetched sheets:", sheets);
+        setUserSheets(sheets);
+      } catch (error) {
+        console.error("Error fetching sheets:", error);
+      }
+    }
+
+    userSheets();
+  }, []);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -68,6 +87,8 @@ const Home = () => {
       <SearchForm 
         loading={setIsLoading}
       />
+
+      <SheetsList sheets={userSheets} />
 
       <ReauthModal 
         show={showReauthModal} 
