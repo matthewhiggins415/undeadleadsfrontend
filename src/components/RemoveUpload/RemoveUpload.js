@@ -1,6 +1,6 @@
 import React from 'react'
 
-const RemoveUpload = ({ sheetUploaded, setSheetUploaded, numOfUploadLeads }) => {
+const RemoveUpload = ({ sheetUploaded, setSheetUploaded, numOfUploadLeads, masterSheetTitle }) => {
     return (
       <div 
         style={{ 
@@ -10,9 +10,12 @@ const RemoveUpload = ({ sheetUploaded, setSheetUploaded, numOfUploadLeads }) => 
           borderRadius: '6px',
           wordBreak: "break-word"
         }}>
-        <p>LinkedIn profile links from this sheet will not be searched again, avoiding duplicate leads.</p>
+        <p>LinkedIn profile links from this sheet will be used to prevent duplicates in all scraping. If you don't care about duplicates just remove this master sheet to disable.</p>
         <p><strong>Uploaded Sheet URL:</strong> <a href={sheetUploaded} target="_blank" rel="noopener noreferrer">{sheetUploaded}</a></p>
+        <p><strong>Sheet Title:</strong> {masterSheetTitle}</p>
         <p><strong>Number of leads:</strong> {numOfUploadLeads ?? 'Loading...'}</p>
+        <p><strong>Master Sheet:</strong> True</p>
+
         <button
           onClick={() => setSheetUploaded('')}
           style={{

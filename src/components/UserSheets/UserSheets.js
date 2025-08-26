@@ -12,8 +12,8 @@ const SheetsList = ({ sheets }) => {
       <div>
         {sheets.map((sheet) => (
           <div key={sheet.id} style={{ marginBottom: '1rem', borderBottom: '1px solid black', paddingBottom: '1rem' }}>
-            <p><strong>Name:</strong>{sheet.name}</p>
             <p><strong>Created At:</strong> {new Date(sheet.createdAt).toLocaleString()}</p>
+            <p><strong>Name:</strong> {sheet.name}</p>
             <p><strong>ID:</strong> {sheet.id}</p>
             <p>
               <strong>URL:</strong>{" "}
@@ -22,8 +22,15 @@ const SheetsList = ({ sheets }) => {
               </a>
             </p>
             <div>
-              <button style={{ marginRight: "1rem", cursor: "pointer" }}>delete</button>
-              <button style={{ marginRight: "1rem", cursor: "pointer" }}>de-dupe</button>
+              <button style={{
+                backgroundColor: '#e53e3e',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                marginTop: '8px',
+              }}>delete</button>
             </div>
           </div>
         ))}

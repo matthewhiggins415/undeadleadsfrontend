@@ -15,6 +15,7 @@ import { getAllSheets } from '../../api/user';
 const socket = io('http://localhost:5000'); 
 
 const Home = () => {
+  const [masterSheetTitle, setMasterSheetTitle] = useState('');
   const [sheetUploaded, setSheetUploaded] = useState(''); 
   const [numOfUploadLeads, setNumOfUploadLeads] = useState(0);
   const [showReauthModal, setShowReauthModal] = useState(false);
@@ -27,7 +28,9 @@ const Home = () => {
       try {
         const sheets = await getAllSheets();
         console.log("Fetched sheets:", sheets);
-        setUserSheets(sheets);
+        // filter out master sheets to get only user-uploaded sheets
+        const nonMasterSheets = sheets.filter(sheet => sheet.isMaster === false);
+        setUserSheets(nonMasterSheets);
       } catch (error) {
         console.error("Error fetching sheets:", error);
       }
@@ -76,12 +79,18 @@ const Home = () => {
         <UploadGoogleSheetForm 
           setSheetUploaded={setSheetUploaded} 
           setNumOfUploadLeads={setNumOfUploadLeads} 
-          onAuthError={() => setShowReauthModal(true)} // pass handler
+          onAuthError={() => setShowReauthModal(true)}
+          setMasterSheetTitle={setMasterSheetTitle}
         />
       )}
 
       {sheetUploaded && (
-        <RemoveUpload setSheetUploaded={setSheetUploaded} sheetUploaded={sheetUploaded} numOfUploadLeads={numOfUploadLeads}/>
+        <RemoveUpload 
+          setSheetUploaded={setSheetUploaded} 
+          sheetUploaded={sheetUploaded} 
+          numOfUploadLeads={numOfUploadLeads}
+          masterSheetTitle={masterSheetTitle}
+        />
       )}
 
       <SearchForm 
